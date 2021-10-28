@@ -70,7 +70,8 @@
     "jet-logger": "^1.0.6",
     "jsonfile": "^6.1.0",
     "module-alias": "^2.2.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "near-api-js": "^0.43.1"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.2.0",
