@@ -1,23 +1,30 @@
-export const proposalSlackPayload = () => {
+import { IProposal } from "../entities/Proposal"
+
+const decode = (str: string):string => Buffer.from(str, 'base64').toString('binary');
+
+export const proposalSlackPayload = (proposal: IProposal) => {
+    
+    const { flag } = JSON.parse(decode(proposal.dao.config.metadata))
+    
     return {
         blocks: [
             {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: ":bank: New `AddMemberToRole` proposal by *isonar.testnet* in _china_ DAO"
+                    text: `:bank: New \`${proposal.kind.type}\` proposal by *${proposal.proposer}* in _${proposal.daoId}_ DAO`
                 }
             },
             {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: ":whale2: Proposal ID: *4*\n :joystick: Status: *In Progress*\n :alarm_clock: Created: *2021-10-29T06:51:02.042Z* \n<https://explorer.testnet.near.org/transactions/DoadWbWR9vi8ehCYXskDrNHKddRfBNw54NP3XzZSZ4mo|View in explorer>"
+                    text: `:whale2: Proposal ID: *${proposal.proposalId}*\n :joystick: Status: *${proposal.status}*\n :alarm_clock: Created: *${proposal.createdAt}* \n<https://explorer.testnet.near.org/transactions/${proposal.transactionHash}|View in explorer>`
                 },
                 accessory: {
                     type: "image",
-                    image_url: "https://sputnik-dao.s3.eu-central-1.amazonaws.com/_dpZv2MCj2HVbeHhFzWs7",
-                    alt_text: "china"
+                    image_url: `https://sputnik-dao.s3.eu-central-1.amazonaws.com/${flag}`,
+                    alt_text: `${proposal.daoId}`
                 }
             },
             {

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Axios from 'axios';
-import { KeyPair, keyStores, connect } from "near-api-js";
 import { proposalSlackPayload } from '../templates/proposal_payload';
+import { IProposal } from '../entities/Proposal';
 
 export async function getProposals(req: Request, res: Response) {
 
@@ -16,10 +16,8 @@ export async function getProposals(req: Request, res: Response) {
         })
 
     console.log(result.data['data'])
-    await Promise.all(result.data.data?.map(async (proposal: any) => {
-      const daoId = proposal.dao.id
-      const proposalId = proposal.proposalId
-      await Axios.post(`https://hooks.slack.com/services/${process.env.SLACK_HOOK}`, proposalSlackPayload())    
+    await Promise.all(result.data.data?.map(async (proposal: IProposal) => {
+      await Axios.post(`https://hooks.slack.com/services/${process.env.SLACK_HOOK}`, proposalSlackPayload(proposal))    
     }));
 
     return res.status(200)
