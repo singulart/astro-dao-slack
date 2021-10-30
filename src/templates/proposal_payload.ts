@@ -47,8 +47,8 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                             text: ":thumbsup:",
                             "emoji": true
                         },
-                        value: "click_me_123",
-                        action_id: "actionId-0"
+                        value: "aye",
+                        action_id: "aye"
                     },
                     {
                         type: "button",
@@ -57,8 +57,8 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                             text: ":thumbsdown:",
                             emoji: true
                         },
-                        value: "click_me_456",
-                        action_id: "actionId-1"
+                        value: "nay",
+                        action_id: "nay"
                     }
                 ]
             }
