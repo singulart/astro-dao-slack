@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
-import { getProposals } from './Proposals';
+import { getProposals, createProposal } from './Proposals';
 import { oauth } from './Slack';
 import { nearWalletCallback } from './NearOauth';
 
@@ -13,7 +13,7 @@ userRouter.delete('/delete/:id', deleteOneUser);
 
 // Proposal-route
 const proposalRouter = Router();
-proposalRouter.post('/', getProposals);
+proposalRouter.post('/', createProposal);
 
 // Proposal-route
 const oauthRouter = Router();

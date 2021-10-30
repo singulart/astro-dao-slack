@@ -5,5 +5,13 @@
       "email": "s@s.com",
       "id": 916353952041
     }
+  ],
+  "slackMappings": [
+    {
+      "slackUserId": "U02JST58STZ",
+      "slackUsername": "isonar.testnets",
+      "daoWallet": "",
+      "accessKey": ""
+    }
   ]
 }

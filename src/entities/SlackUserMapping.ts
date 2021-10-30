@@ -13,11 +13,11 @@ class SlackUserMapping implements ISlackUserMapping {
     public daoWallet: string;
     public accessKey: string;
 
-    constructor(mapping: ISlackUserMapping) {
-        this.slackUserId = mapping.slackUserId;
-        this.slackUsername = mapping.slackUsername;
-        this.daoWallet = mapping.daoWallet;
-        this.accessKey = mapping.accessKey;
+    constructor(slackUserId: string, slackUsername: string, daoWallet?: string, accessKey?: string) {
+        this.slackUserId = slackUserId;
+        this.slackUsername = slackUsername;
+        this.daoWallet = daoWallet || '';
+        this.accessKey = accessKey || '';
     }
 
 }
