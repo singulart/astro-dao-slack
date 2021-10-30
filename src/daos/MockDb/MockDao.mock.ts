@@ -1,9 +1,11 @@
 import jsonfile from 'jsonfile';
 import { IUser } from '../../entities/User';
+import { ISlackUserMapping } from '../../entities/SlackUserMapping';
 
 
 interface IDatabase {
     users: IUser[];
+    slackMappings: ISlackUserMapping[];
 }
 
 
@@ -18,7 +20,7 @@ class MockDaoMock {
 
 
     protected saveDb(db: IDatabase): Promise<void> {
-        return jsonfile.writeFile(this.dbFilePath, db);
+        return jsonfile.writeFile(this.dbFilePath, db, {spaces: 2});
     }
 }
 

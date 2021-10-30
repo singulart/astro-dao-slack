@@ -4,8 +4,9 @@ import { proposalSlackPayload } from '../templates/proposal_payload';
 import { IProposal } from '../entities/Proposal';
 
 export async function getProposals(req: Request, res: Response) {
+    //TODO validate the request signature: https://api.slack.com/authentication/verifying-requests-from-slack
 
-    console.log(req.headers)
+    console.log(`Got a request. Headers=${JSON.stringify(req.headers)}. Body=${JSON.stringify(req.body)}`)
 
     const result = await Axios.get(`${process.env.ASTRO_API}/proposals`, 
         {
