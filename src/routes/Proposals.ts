@@ -99,12 +99,12 @@ export async function createProposal(req: Request, res: Response) {
     // const serializedTransaction = Buffer.from(newTransaction.encode()).toString('base64');
 
     // const deserialized = transactions.Transaction.decode(Buffer.from(newTransaction.encode()));
-    const transactionz = serializedTransaction.split(',')
-    .map((str: string) => Buffer.from(str, 'base64'))
-    .map((buffer: Buffer) => utils.serialize.deserialize(transactions.SCHEMA, transactions.Transaction, buffer));
+    // const transactionz = serializedTransaction.split(',')
+    // .map((str: string) => Buffer.from(str, 'base64'))
+    // .map((buffer: Buffer) => utils.serialize.deserialize(transactions.SCHEMA, transactions.Transaction, buffer));
 
-    console.log(JSON.stringify(transactionz));
-    console.log(String.fromCharCode(...transactionz[0].actions[0].functionCall.args)); // this works
+    // console.log(JSON.stringify(transactionz));
+    // console.log(String.fromCharCode(...transactionz[0].actions[0].functionCall.args)); // this works
 
     return res.send(`<https://localhost:1234/sign/?transactions=${serializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Confirm your choice!> please`);
     // const store = getKeyStore()
