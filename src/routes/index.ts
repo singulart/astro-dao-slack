@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
 import { getProposals, createProposal } from './Proposals';
 import { oauth } from './Slack';
-import { nearWalletCallback } from './NearOauth';
+import { nearWalletCallback } from './NearWalletCallback';
 
 // User-route
 const userRouter = Router();
