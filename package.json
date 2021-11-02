@@ -60,6 +60,7 @@
     "build.ts"
   ],
   "dependencies": {
+    "bn": "^1.0.5",
     "command-line-args": "^5.2.0",
     "cookie-parser": "^1.4.5",
     "dotenv": "^10.0.0",
@@ -71,7 +72,7 @@
     "jsonfile": "^6.1.0",
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
-    "near-api-js": "^0.43.1"
+    "near-api-js": "^0.39.0"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.2.0",
