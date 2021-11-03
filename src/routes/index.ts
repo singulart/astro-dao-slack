@@ -1,8 +1,7 @@
 import { Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
-import { getProposals, createProposal } from './Proposals';
-import { oauth } from './Slack';
-import { nearWalletCallback } from './NearWalletCallback';
+import { getProposals, createProposal, voteForProposal } from './Proposals';
+import { interactionCallback, optionsCallback } from './Slack';
 
 // User-route
 const userRouter = Router();
@@ -13,12 +12,13 @@ userRouter.delete('/delete/:id', deleteOneUser);
 
 // Proposal-route
 const proposalRouter = Router();
-proposalRouter.post('/', createProposal);
+proposalRouter.post('/', getProposals);
+proposalRouter.post('/vote', voteForProposal);
 
-// Proposal-route
-const oauthRouter = Router();
-oauthRouter.get('/', oauth);
-oauthRouter.get('/near_wallet', nearWalletCallback);
+// Slack-route
+const slackRouter = Router();
+slackRouter.post('/interaction', interactionCallback);
+slackRouter.get('/options', optionsCallback);
 
 
 
@@ -26,6 +26,6 @@ oauthRouter.get('/near_wallet', nearWalletCallback);
 const baseRouter = Router();
 baseRouter.use('/users', userRouter);
 baseRouter.use('/proposal', proposalRouter);
-baseRouter.use('/oauth', oauthRouter);
+baseRouter.use('/slack', slackRouter);
 
 export default baseRouter;
