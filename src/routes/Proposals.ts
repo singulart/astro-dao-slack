@@ -6,7 +6,7 @@ import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mo
 import { ISlackRequest } from '../entities/SlackRequest';
 import SlackUserMapping from '../entities/SlackUserMapping';
 import { addNewKey, getKeyStore } from '../shared/functions';
-import { KeyPair, keyStores, connect, transactions, utils } from "near-api-js";
+import { KeyPair, connect, transactions, utils } from "near-api-js";
 import BN from 'bn.js';
 
 const receiverId = 'china-open.sputnikv2.testnet';
