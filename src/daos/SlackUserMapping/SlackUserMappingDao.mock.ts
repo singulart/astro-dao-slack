@@ -7,14 +7,11 @@ import MockDaoMock from '../MockDb/MockDao.mock';
 class SlackUserMappingDao extends MockDaoMock implements ISlackUserMappingDao {
 
 
-    public async findBySlackUser(slackUser: string): Promise<ISlackUserMapping | null> {
+    public async findBySlackUser(slackUser: string): Promise<ISlackUserMapping | undefined> {
         const db = await super.openDb();
-        for (const mapping of db.slackMappings) {
-            if (mapping.slackUserId === slackUser || mapping.slackUsername === slackUser) {
-                return mapping;
-            }
-        }
-        return null;
+        return db.slackMappings.find(mapping => 
+                (mapping.slackUserId === slackUser || mapping.slackUsername === slackUser) && mapping.current
+            )
     }
 
     public async findByWallet(wallet: string): Promise<ISlackUserMapping | null> {

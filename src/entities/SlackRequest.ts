@@ -12,3 +12,13 @@ export interface ISlackRequest {
     response_url: string;
     trigger_id: string;
 }
+
+export interface ISlackInteraction {
+    response_url: string;
+    actions: [ISlackInteractionAction];
+}
+
+export interface ISlackInteractionAction {
+    action_id: string;
+    value: string;
+}
