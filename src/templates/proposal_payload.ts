@@ -4,9 +4,11 @@ const decode = (str: string):string => Buffer.from(str, 'base64').toString('bina
 
 export const proposalSlackPayload = (proposal: IProposal) => {
     
-    const { flag } = JSON.parse(decode(proposal.dao.config.metadata))
-    
+    const { flag } = JSON.parse(decode(proposal.dao.config.metadata));
     return {
+
+        text: 'New proposal added',
+
         blocks: [
             {
                 type: "section",

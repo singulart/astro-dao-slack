@@ -3,20 +3,39 @@ export interface IProposal {
     transactionHash: string;
     proposalId: number;
     createdAt: string;
+    votePeriodEnd: string;
     daoId: string;
     proposer: string;
     description: string;
     status: string;
-    kind: IProposalKind;
+    kind: IProposal;
     dao: IDao;
+    votes: Map<string, string>;
 }
 
-export interface IProposalKind {
+export interface IProposal {
     type: string;
+}
+
+export interface ITransferProposal extends IProposal {
+    tokenId: string;
+    memberId: string;
+    role: string;
+}
+
+export interface IAddMemberProposal extends IProposal {
     tokenId: string;
     receiverId: string;
     amount: string;
     msg: string;
+}
+
+export interface IAddBountyProposal extends IProposal {
+    description: string;
+    token: string;
+    amount: string;
+    times: number;
+    maxDeadline: string;
 }
 
 export interface IDaoConfig {
