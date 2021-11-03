@@ -81,22 +81,27 @@ export async function voteForProposal(req: Request, res: Response) {
 export async function createProposal(req: Request, res: Response) {
     //TODO validate the request signature: https://api.slack.com/authentication/verifying-requests-from-slack
 
-    const contractId = 'china-open.sputnikv2.testnet'; //TODO
-
     const slackReq: ISlackRequest = req.body;
     const storedMapping = await persistenceDAL.findBySlackUser(slackReq.user_id);
-    if(storedMapping && storedMapping.daoWallet) {
-        console.log(`Found mapping between slack user ${slackReq.user_name} and wallet ${storedMapping.daoWallet}`);
-        return res.send(`Hello ${storedMapping.daoWallet}`);
 
+    if( !storedMapping ) {
+        return res.send(`You need to connect a NEAR account. Please follow instructions in /setup command`);
     } else {
-        console.log(`No mapping found between slack user ${slackReq.user_name} and DAO wallet. User didn't finish the connect wallet flow`)
-        if(!storedMapping) {
-            let newMapping = new SlackUserMapping(slackReq.user_id, slackReq.user_name);
-            await persistenceDAL.add(newMapping);
+
+        if(storedMapping.daoWallet) {
+            console.log(`Found mapping between slack user ${slackReq.user_name} and wallet ${storedMapping.daoWallet}`);
+            return res.send(`Hello ${storedMapping.daoWallet}`);
+
+        } else {
+            console.log(`No mapping found between slack user ${slackReq.user_name} and DAO wallet. User didn't finish the connect wallet flow`)
+            if(!storedMapping) {
+                let newMapping = new SlackUserMapping(slackReq.user_id, slackReq.user_name);
+                await persistenceDAL.add(newMapping);
+            }
+            const publicKey = await addNewKey(slackReq.user_id);
+            return res.status(400).end();
         }
-        const publicKey = await addNewKey(slackReq.user_id);
-        return res.send(`<https://wallet.testnet.near.org/login/?title=Slack&public_key=${publicKey}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet&contract_id=${contractId}|Connect your wallet> first!`)
+
     }
 
 }

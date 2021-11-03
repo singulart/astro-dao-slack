@@ -2,7 +2,7 @@ export interface ISlackUserMapping {
     slackUserId: string;
     slackUsername: string;
     daoWallet: string;
-    accessKey: string;
+    current: boolean;
 }
 
 
@@ -11,13 +11,13 @@ class SlackUserMapping implements ISlackUserMapping {
     public slackUserId: string;
     public slackUsername: string;
     public daoWallet: string;
-    public accessKey: string;
+    public current: boolean;
 
-    constructor(slackUserId: string, slackUsername: string, daoWallet?: string, accessKey?: string) {
+    constructor(slackUserId: string, slackUsername: string, daoWallet?: string, current?: boolean) {
         this.slackUserId = slackUserId;
         this.slackUsername = slackUsername;
         this.daoWallet = daoWallet || '';
-        this.accessKey = accessKey || '';
+        this.current = current || false;
     }
 
 }
