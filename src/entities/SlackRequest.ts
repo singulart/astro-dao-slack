@@ -15,10 +15,16 @@ export interface ISlackRequest {
 
 export interface ISlackInteraction {
     response_url: string;
-    actions: [ISlackInteractionAction];
+    user: ISlackUser;
+    actions: ISlackInteractionAction[];
 }
 
 export interface ISlackInteractionAction {
     action_id: string;
     value: string;
+}
+
+export interface ISlackUser {
+    id: string;
+    username: string;
 }
