@@ -7,17 +7,7 @@ import { ISlackRequest } from '../entities/SlackRequest';
 import SlackUserMapping from '../entities/SlackUserMapping';
 import { addNewKey, getKeyStore } from '../shared/functions';
 import { KeyPair, keyStores, connect, transactions, utils } from "near-api-js";
-import { PublicKey } from 'near-api-js/lib/utils';
 import BN from 'bn.js';
-import { CreateAccount } from 'near-api-js/lib/transaction';
-import { Transfer } from 'near-api-js/lib/transaction';
-import { DeployContract } from 'near-api-js/lib/transaction';
-import { DeleteAccount } from 'near-api-js/lib/transaction';
-import { DeleteKey } from 'near-api-js/lib/transaction';
-import { AddKey } from 'near-api-js/lib/transaction';
-import { Stake } from 'near-api-js/lib/transaction';
-import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
-import borsh_1 from "borsh";
 
 
 
@@ -46,12 +36,6 @@ export async function getProposals(req: Request, res: Response) {
 export async function createProposal(req: Request, res: Response) {
     //TODO validate the request signature: https://api.slack.com/authentication/verifying-requests-from-slack
 
-    const contractId = 'china-open.sputnikv2.testnet'; //TODO
-
-    // const tx = Buffer.from(
-    //     'DgAAAHNpbmd1bGFydC5uZWFyAHEDsTIB8okaSeKdMxYYeV7vrRPaUm+vYtn9q+HjjYVuBIP3ZW4uAAARAAAAYmVycnljbHViLmVrLm5lYXKbhm5IkbVOmnwTxyerFij4GuzrY6I1shO+xlGwiQw0lAEAAAACCgAAAGJ1eV90b2tlbnMCAAAAe30A4FfrSBsAAAAAgPZK4ccCLRUAAAAAAAA=', 
-    //     'base64');
-
     const config = {
         keyStore: getKeyStore(),
         networkId: "testnet",
@@ -60,68 +44,30 @@ export async function createProposal(req: Request, res: Response) {
 
     const near = await connect(config);
     const block = await near.connection.provider.block({ finality: 'final' })
-    console.log(block.header.hash)
     const blockHash = utils.serialize.base_decode(block.header.hash);
 
-    const publicKey = PublicKey.fromString('DhLrVKpMavpYTnmfP8YKVWY1enQd1xQQDieU5cEAREES');
-    // const newTransaction = transactions.createTransaction(
-    //     'isonar.testnet',
-    //     pubKey,
-    //     'china-open.sputnikv2.testnet',
-    //     BigInt(1),
-    //     [
-    //         transactions.functionCall(
-    //             'act_proposal', 
-    //             new TextEncoder()
-    //                 .encode(JSON.stringify({action: 'VoteApprove', id: 4})), 
-    //             new BN(2500000000000), 
-    //             new BN(2500000000000)
-    //         )
-    //     ], 
-    //     blockHash);
-
-    const signerId = 'isonar.testnet';
+    const signerId = 'isonar1.testnet';
+    const publicKey = KeyPair.fromRandom("ed25519").getPublicKey();
     const nonce = new BN(1);
     const receiverId = 'china-open.sputnikv2.testnet';
+
+    const methodName = 'act_proposal';
+    const args = new TextEncoder().encode(JSON.stringify({action: 'VoteApprove', id: 7}));
+    const gas = new BN(250000000000000);
+    const deposit = new BN(0);
     const actions = [
-        transactions.functionCall(
-            'act_proposal', 
-            new TextEncoder()
-                .encode(JSON.stringify({action: 'VoteApprove', id: 4})), 
-            new BN(2500000000000), 
-            new BN(2500000000000)
+        new transactions.Action(
+            { 
+                functionCall: new transactions.FunctionCall({methodName, args, gas, deposit}) 
+            }
         )
     ];
 
     const newTransaction = new transactions.Transaction({ signerId, publicKey, nonce, receiverId, blockHash, actions})
     
     const serializedTransaction = Buffer.from(utils.serialize.serialize(transactions.SCHEMA, newTransaction)).toString('base64');
-    // const serializedTransaction = Buffer.from(newTransaction.encode()).toString('base64');
-
-    // const deserialized = transactions.Transaction.decode(Buffer.from(newTransaction.encode()));
-    // const transactionz = serializedTransaction.split(',')
-    // .map((str: string) => Buffer.from(str, 'base64'))
-    // .map((buffer: Buffer) => utils.serialize.deserialize(transactions.SCHEMA, transactions.Transaction, buffer));
-
-    // console.log(JSON.stringify(transactionz));
-    // console.log(String.fromCharCode(...transactionz[0].actions[0].functionCall.args)); // this works
-
-    return res.send(`<https://localhost:1234/sign/?transactions=${serializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Confirm your choice!> please`);
-    // const store = getKeyStore()
-    // const config = {
-    //     keyStore: new keyStores.BrowserLocalStorageKeyStore(),
-    //     networkId: "testnet",
-    //     nodeUrl: "https://rpc.testnet.near.org",
-    // };
-
-    // const near = await connect(config);
-    // const acc = await near.account('xxx.testnet');
-    // const callResult = await acc.functionCall({
-    //     methodName: 'act_proposal',
-    //     contractId: contractId,
-    //     args: {action: 'VoteApprove', id: 4}
-    // });
-    // console.log(callResult);
+    const escapedSerializedTransaction = serializedTransaction.replace(/\+/g, '%2B').replace(/\//g, '%2F');
+    return res.send(`<https://wallet.testnet.near.org/sign/?transactions=${escapedSerializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Confirm your choice!> please`);
 }
 
 // export async function createProposal(req: Request, res: Response) {
