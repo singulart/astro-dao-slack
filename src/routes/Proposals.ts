@@ -12,7 +12,7 @@ import BN from 'bn.js';
 const receiverId = 'china-open.sputnikv2.testnet';
 
 
-const persistenceDAL = new SlackUserMappingDao()
+const persistenceDAL = new SlackUserMappingDao();
 
 export async function getProposals(req: Request, res: Response) {
     //TODO add cron or similar tool to run this periodically

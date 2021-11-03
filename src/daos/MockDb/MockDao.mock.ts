@@ -3,7 +3,7 @@ import { IUser } from '../../entities/User';
 import { ISlackUserMapping } from '../../entities/SlackUserMapping';
 
 
-interface IDatabase {
+export interface IDatabase {
     users: IUser[];
     slackMappings: ISlackUserMapping[];
 }

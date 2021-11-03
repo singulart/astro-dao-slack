@@ -10,8 +10,8 @@
     {
       "slackUserId": "U02JST58STZ",
       "slackUsername": "isonar.testnets",
-      "daoWallet": "",
-      "accessKey": "ed25519:5mWyF9dmr3gGLTvK7fmmZBqdLaPXniXa4pxmNod8tERpMaTniwXj2qaR1HsNJja7Z3LaHfcAiUaMsGmJfwVCuPS9"
+      "daoWallet": "isonar1.testnet",
+      "current": true
     }
   ]
 }
