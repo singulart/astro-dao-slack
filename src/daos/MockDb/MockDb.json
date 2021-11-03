@@ -11,6 +11,12 @@
       "slackUserId": "U02JST58STZ",
       "slackUsername": "isonar.testnets",
       "daoWallet": "isonar1.testnet",
+      "current": false
+    },
+    {
+      "slackUserId": "U02JST58STZ",
+      "slackUsername": "isonar.testnets",
+      "daoWallet": "aaaa.tst",
       "current": true
     }
   ]

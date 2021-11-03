@@ -4,7 +4,7 @@ import Axios from "axios";
 import { addAccountTextField } from '../templates/setup_add_account';
 import { removeAccountTextField } from '../templates/setup_remove_account';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock';
-import SlackUserMapping from '../entities/SlackUserMapping';
+import SlackUserMapping, { ISlackUserMapping } from '../entities/SlackUserMapping';
 import { plainText } from '../templates/plaintext';
 
 const persistenceDAL = new SlackUserMappingDao();
@@ -22,6 +22,15 @@ export async function interactionCallback(req: Request, res: Response) {
         await Axios.post(request.response_url, addAccountTextField()); 
     } else if(actions[0].action_id === 'action_remove_account_clicked') {
         await Axios.post(request.response_url, removeAccountTextField()); 
+    } else if(actions[0].action_id === 'action_view_accounts_clicked') {
+        const accounts = await persistenceDAL.findAllBySlackUser(request.user.username);
+        if( accounts && accounts.length > 0) {
+            const listAccounts = accounts.map( (a: ISlackUserMapping) => 
+                    `\`${a.daoWallet}\` ${a.current ? ' *[Current]* ' : ''}\n`
+                )
+            .join('');
+            await Axios.post(request.response_url, plainText(listAccounts));
+        }
     } else if(actions[0].action_id === 'action_add_account_entered') {
         await persistenceDAL.add(new SlackUserMapping(request.user.id, request.user.username, actions[0].value, true));
         await Axios.post(request.response_url, plainText(`Account \`${actions[0].value}\` added`)); 
