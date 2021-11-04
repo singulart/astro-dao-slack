@@ -19,7 +19,7 @@ proposalRouter.post('/vote', voteForProposal);
 // Slack-route
 const slackRouter = Router();
 slackRouter.post('/interaction', interactionCallback);
-slackRouter.get('/options', optionsCallback);
+slackRouter.post('/options', optionsCallback);
 
 // preferences-route
 const preferencesRouter = Router();

@@ -1,8 +1,12 @@
+import { IDao } from "../entities/Proposal";
+
 export const createProposalInitialModal = (
     triggerId: string, 
     viewId: string = '', 
     viewHash: string = '', 
-    selectedProposalType: string = '') => `{
+    selectedProposalType: string = '',
+    daos: IDao[]
+    ) => `{
 
     ${triggerId ? `"trigger_id": "${triggerId}",` : ''}
     ${viewId ? `"view_id": "${viewId}",` : ''}
@@ -99,7 +103,25 @@ export const createProposalInitialModal = (
                             }
                         ],
                         "action_id": "proposal_type_select_action"
-                    }
+                    },
+                    {
+                        "type": "static_select",
+                        "action_id": "proposal_select_dao",
+                        "placeholder": {
+                          "type": "plain_text",
+                          "text": "Choose a DAO"
+                        },
+                        "options": [
+                            ${daos.map((d: IDao) => `
+                            {
+                              "text": {
+                                "type": "plain_text",
+                                "text": "${d.id}"
+                              },
+                              "value": "proposal_dao_${d.id}"
+                            }`).join(',')}
+                        ]                      
+                    }       
                 ]
             }
             ${selectedProposalType === 'proposal_type_payout' ? `,
