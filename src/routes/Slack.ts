@@ -7,6 +7,7 @@ import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mo
 import SlackUserMapping, { ISlackUserMapping } from '../entities/SlackUserMapping';
 import { plainText } from '../templates/plaintext';
 import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
+import { IDao } from '../entities/Proposal';
 
 const persistenceDAL = new SlackUserMappingDao();
 
@@ -41,11 +42,15 @@ export async function interactionCallback(req: Request, res: Response) {
     }  else if(actions[0].action_id === 'proposal_type_select_action') {
         const selectedProposalType = request.actions[0].selected_option.value;
         console.log(`Selected ${selectedProposalType}`);
-        const currentUser = await persistenceDAL.findBySlackUser(request.user.id);
 
+        const currentUser = await persistenceDAL.findBySlackUser(request.user.id);
+        const getMyDaosRestApiResponse = await Axios.get(`${process.env.ASTRO_API}/daos/account-daos/${currentUser?.daoWallet}`);
+        const daos: IDao[] = getMyDaosRestApiResponse.data;
+    
         // see https://api.slack.com/surfaces/modals/using#updating_apis
         const viewOpen = await Axios.post('https://slack.com/api/views.update', 
-            createProposalInitialModal('', currentUser?.createProposalView.id, currentUser?.createProposalView.hash, selectedProposalType), 
+            createProposalInitialModal('', currentUser?.createProposalView.id, 
+                currentUser?.createProposalView.hash, selectedProposalType, daos), 
             { headers: {
                 'Content-Type': 'application/json', 
                 'Authorization': `Bearer ${process.env.BOT_TOKEN}`
@@ -61,6 +66,5 @@ export async function optionsCallback(req: Request, res: Response) {
 
     console.log(req.headers);
     console.log(req.body);
-
     return res.status(201).end();
 }

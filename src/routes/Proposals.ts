@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import Axios from 'axios';
 import { proposalSlackPayload } from '../templates/proposal_payload';
-import { IProposal } from '../entities/Proposal';
+import { IDao, IProposal } from '../entities/Proposal';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock'
 import { ISlackRequest } from '../entities/SlackRequest';
 import SlackUserMapping, { ISlackView } from '../entities/SlackUserMapping';
@@ -94,9 +94,12 @@ export async function createProposal(req: Request, res: Response) {
             console.log(req.headers);
             console.log(req.body);
             
+            const getMyDaosRestApiResponse = await Axios.get(`${process.env.ASTRO_API}/daos/account-daos/${storedMapping.daoWallet}`);
+            const daos: IDao[] = getMyDaosRestApiResponse.data;
+    
             // see https://api.slack.com/surfaces/modals/using#opening_modals
             const viewOpen = await Axios.post('https://slack.com/api/views.open', 
-                createProposalInitialModal(slackReq.trigger_id), 
+                createProposalInitialModal(slackReq.trigger_id, '', '', '', daos), 
                 { headers: {
                     'Content-Type': 'application/json', 
                     'Authorization': `Bearer ${process.env.BOT_TOKEN}`
