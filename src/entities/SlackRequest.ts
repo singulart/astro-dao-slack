@@ -14,17 +14,25 @@ export interface ISlackRequest {
 }
 
 export interface ISlackInteraction {
+    type: string;
+    trigger_id: string;
     response_url: string;
     user: ISlackUser;
     actions: ISlackInteractionAction[];
 }
 
 export interface ISlackInteractionAction {
+    type: string;
     action_id: string;
     value: string;
+    selected_option: ISelectedOption;
 }
 
 export interface ISlackUser {
     id: string;
     username: string;
+}
+
+export interface ISelectedOption {
+    value: string;
 }

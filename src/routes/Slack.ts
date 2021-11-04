@@ -6,6 +6,7 @@ import { removeAccountTextField } from '../templates/setup_remove_account';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock';
 import SlackUserMapping, { ISlackUserMapping } from '../entities/SlackUserMapping';
 import { plainText } from '../templates/plaintext';
+import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
 
 const persistenceDAL = new SlackUserMappingDao();
 
@@ -37,6 +38,20 @@ export async function interactionCallback(req: Request, res: Response) {
     } else if(actions[0].action_id === 'action_remove_account_entered') {
         await persistenceDAL.delete(new SlackUserMapping(request.user.id, request.user.username, actions[0].value));
         await Axios.post(request.response_url, plainText(`Account \`${actions[0].value}\` removed`)); 
+    }  else if(actions[0].action_id === 'proposal_type_select_action') {
+        const selectedProposalType = request.actions[0].selected_option.value;
+        console.log(`Selected ${selectedProposalType}`);
+        const currentUser = await persistenceDAL.findBySlackUser(request.user.id);
+
+        // see https://api.slack.com/surfaces/modals/using#updating_apis
+        const viewOpen = await Axios.post('https://slack.com/api/views.update', 
+            createProposalInitialModal('', currentUser?.createProposalView.id, currentUser?.createProposalView.hash, selectedProposalType), 
+            { headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${process.env.BOT_TOKEN}`
+                }
+            }); 
+        console.log(viewOpen.data);
     } 
 
     return res.status(201).end();
