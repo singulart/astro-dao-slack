@@ -4,7 +4,7 @@ import { proposalSlackPayload } from '../templates/proposal_payload';
 import { IProposal } from '../entities/Proposal';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock'
 import { ISlackRequest } from '../entities/SlackRequest';
-import SlackUserMapping from '../entities/SlackUserMapping';
+import SlackUserMapping, { ISlackView } from '../entities/SlackUserMapping';
 import { addNewKey, getKeyStore } from '../shared/functions';
 import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
 import { KeyPair, connect, transactions, utils } from "near-api-js";
@@ -93,6 +93,8 @@ export async function createProposal(req: Request, res: Response) {
             console.log(`Found mapping between slack user ${slackReq.user_name} and wallet ${storedMapping.daoWallet}`);
             console.log(req.headers);
             console.log(req.body);
+            
+            // see https://api.slack.com/surfaces/modals/using#opening_modals
             const viewOpen = await Axios.post('https://slack.com/api/views.open', 
                 createProposalInitialModal(slackReq.trigger_id), 
                 { headers: {
@@ -101,6 +103,12 @@ export async function createProposal(req: Request, res: Response) {
                   }
                 }); 
             console.log(viewOpen.data);
+            
+            // here we store the view id and hash, as per Slack documentation https://api.slack.com/surfaces/modals/using#updating_apis
+            const viewData: ISlackView = viewOpen.data.view;
+            storedMapping.createProposalView = {id: viewData.id, hash: viewData.hash};
+            persistenceDAL.update(storedMapping);
+
             return res.status(200).end();    
         } else {
             console.log(`No mapping found between slack user ${slackReq.user_name} and DAO wallet. User didn't finish the connect wallet flow`)

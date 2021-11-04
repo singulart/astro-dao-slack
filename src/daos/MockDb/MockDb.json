@@ -17,7 +17,11 @@
       "slackUserId": "U02JST58STZ",
       "slackUsername": "isonar.testnets",
       "daoWallet": "aaaa.tst",
-      "current": true
+      "current": true,
+      "createProposalView": {
+        "id": "V02L6N5JCFM",
+        "hash": "1636034936.DGG07BPg"
+      }
     }
   ]
 }
