@@ -6,6 +6,7 @@ import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mo
 import { ISlackRequest } from '../entities/SlackRequest';
 import SlackUserMapping from '../entities/SlackUserMapping';
 import { addNewKey, getKeyStore } from '../shared/functions';
+import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
 import { KeyPair, connect, transactions, utils } from "near-api-js";
 import BN from 'bn.js';
 
@@ -90,8 +91,17 @@ export async function createProposal(req: Request, res: Response) {
 
         if(storedMapping.daoWallet) {
             console.log(`Found mapping between slack user ${slackReq.user_name} and wallet ${storedMapping.daoWallet}`);
-            return res.send(`Hello ${storedMapping.daoWallet}`);
-
+            console.log(req.headers);
+            console.log(req.body);
+            const viewOpen = await Axios.post('https://slack.com/api/views.open', 
+                createProposalInitialModal(slackReq.trigger_id), 
+                { headers: {
+                    'Content-Type': 'application/json', 
+                    'Authorization': `Bearer ${process.env.BOT_TOKEN}`
+                  }
+                }); 
+            console.log(viewOpen.data);
+            return res.status(200).end();    
         } else {
             console.log(`No mapping found between slack user ${slackReq.user_name} and DAO wallet. User didn't finish the connect wallet flow`)
             if(!storedMapping) {
