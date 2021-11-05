@@ -4,13 +4,14 @@ import Axios from "axios";
 import { addAccountTextField } from '../templates/setup_add_account';
 import { removeAccountTextField } from '../templates/setup_remove_account';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock';
-import SlackUserMapping, { ISlackUserMapping } from '../entities/SlackUserMapping';
+import SlackUserMapping, { ISlackUserMapping, ISlackView } from '../entities/SlackUserMapping';
 import { plainText } from '../templates/plaintext';
 import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
 import { IDao } from '../entities/Proposal';
-import { TransferProposal } from '../transactions/TransferProposal';
+import { ProposalStruct } from '../transactions/TransferProposal';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { createSerializedTransaction } from '../shared/txMaker';
+import { intervalToSeconds } from '../shared/functions';
 
 const persistenceDAL = new SlackUserMappingDao();
 
@@ -38,7 +39,7 @@ export async function interactionCallback(req: Request, res: Response) {
                 res.status(400).send('Invalid form data').end();
             }
     
-            const payoutTransaction: TransferProposal = {
+            const payoutTransaction: ProposalStruct = {
                 proposal: {
                     description: details,
                     kind: {
@@ -55,9 +56,68 @@ export async function interactionCallback(req: Request, res: Response) {
             // build a serialized transaction 
             const escapedSerializedTransaction = await createSerializedTransaction(currentUser?.daoWallet as string, dao, 'add_proposal', payoutTransaction);
 
-            return res.send(`<https://wallet.testnet.near.org/sign/?transactions=${escapedSerializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Sign the transaction!>`);
+            const sentMessage = await Axios.post('https://slack.com/api/chat.postEphemeral', 
+            {
+                channel: request.user.id,
+                user: request.user.id,
+                text: `<https://wallet.testnet.near.org/sign/?transactions=${escapedSerializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Sign the transaction!>`
+            },
+             
+            { headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${process.env.BOT_TOKEN}`
+              }
+            }); 
+            console.log(`Direct message to sign transaction sent: ${sentMessage.data.ok}`);            
+        } else if(proposalType === 'proposal_type_bounty') {
+            const amount = request.view.state.values.bounty_amount.bounty_amount.value;
+            const details = request.view.state.values.bounty_details.bounty_details.value;
+            const link = request.view.state.values.bounty_link.bounty_link.value; // TODO
+            const claimsNumber = request.view.state.values.bounty_num_claims.bounty_num_claims.value;
+            const completeIn = request.view.state.values.bounty_complete_in_1.bounty_complete_in_1.value;
+            const completeInPeriod = request.view.state.values.bounty_complete_in_2.bounty_complete_in_2.selected_option.value;
+            
+    
+            if(!dao || !amount || !claimsNumber || !completeIn || !completeInPeriod) {
+                res.status(400).send('Invalid form data').end();
+            }
+    
+            const payoutTransaction: ProposalStruct = {
+                proposal: {
+                    description: details,
+                    kind: {
+                        AddBounty: {
+                            bounty: {
+                                description: details,
+                                token: '',
+                                amount: parseNearAmount(amount) as string,
+                                times: +claimsNumber,
+                                max_deadline: intervalToSeconds(completeIn, completeInPeriod)
+                            }
+                        }
+                    }    
+                }
+            }
+            console.log(JSON.stringify(payoutTransaction)); 
+
+            // build a serialized transaction 
+            const escapedSerializedTransaction = await createSerializedTransaction(currentUser?.daoWallet as string, dao, 'add_proposal', payoutTransaction);
+
+            const sentMessage = await Axios.post('https://slack.com/api/chat.postEphemeral', 
+            {
+                channel: request.user.id,
+                user: request.user.id,
+                text: `<https://wallet.testnet.near.org/sign/?transactions=${escapedSerializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Sign the transaction!>`
+            },
+             
+            { headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${process.env.BOT_TOKEN}`
+              }
+            }); 
+            console.log(`Direct message to sign transaction sent: ${sentMessage.data.ok}`);            
         }
-        return res.status(201).end();
+        return res.status(200).end();
     } else if(actions[0]) {
         if(actions[0].action_id === 'action_add_account_clicked') {
             await Axios.post(request.response_url, addAccountTextField()); 
@@ -83,9 +143,14 @@ export async function interactionCallback(req: Request, res: Response) {
             console.log(`Selected ${selectedProposalType}`);
     
             const currentUser = await persistenceDAL.findBySlackUser(request.user.id);
+            if(!currentUser) {
+                return res.status(404).end('No current user');
+            }
             const getMyDaosRestApiResponse = await Axios.get(`${process.env.ASTRO_API}/daos/account-daos/${currentUser?.daoWallet}`);
             const daos: IDao[] = getMyDaosRestApiResponse.data;
         
+// console.log(createProposalInitialModal('', currentUser?.createProposalView.id, currentUser?.createProposalView.hash, selectedProposalType, daos));
+
             // see https://api.slack.com/surfaces/modals/using#updating_apis
             const viewOpen = await Axios.post('https://slack.com/api/views.update', 
                 createProposalInitialModal('', currentUser?.createProposalView.id, 
@@ -95,7 +160,12 @@ export async function interactionCallback(req: Request, res: Response) {
                     'Authorization': `Bearer ${process.env.BOT_TOKEN}`
                     }
                 }); 
-            console.log(viewOpen.data);
+            
+            // here we store the view id and hash, as per Slack documentation https://api.slack.com/surfaces/modals/using#updating_apis
+            const viewData: ISlackView = viewOpen.data.view;
+            currentUser.createProposalView = {id: viewData.id, hash: viewData.hash};
+            persistenceDAL.update(currentUser);
+            
         } 
     }
 

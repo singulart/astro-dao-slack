@@ -84,7 +84,7 @@ export const createProposalInitialModal = (
                                     "text": "Bounty",
                                     "emoji": true
                                 },
-                                "value": "c"
+                                "value": "proposal_type_bounty"
                             },
                             {
                                 "text": {
@@ -196,6 +196,140 @@ export const createProposalInitialModal = (
                     "emoji": true
                 },
                 "optional": true
+            }` : ''}
+            ${selectedProposalType === 'proposal_type_bounty' ? `,
+            {
+                "block_id": "bounty_amount",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "bounty_amount",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "0.0",
+                        "emoji": true
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Amount, NEAR",
+                    "emoji": true
+                }
+            },
+            {
+                "block_id": "bounty_details",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "multiline": true,
+                    "action_id": "bounty_details",
+                    "max_length": 500
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Details",
+                    "emoji": true
+                },
+                "optional": true
+            },
+            {
+                "block_id": "bounty_link",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "bounty_link",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "External link",
+                        "emoji": true
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "External Link",
+                    "emoji": true
+                },
+                "optional": true
+            },
+            {
+                "block_id": "bounty_num_claims",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "bounty_num_claims",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "3",
+                        "emoji": true
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Number of bounty claims",
+                    "emoji": true
+                }
+            },
+            {
+                "block_id": "bounty_complete_in_1",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "bounty_complete_in_1",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "3",
+                        "emoji": true
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Complete in",
+                    "emoji": true
+                }
+            },
+            {
+                "block_id": "bounty_complete_in_2",
+                "type": "actions",
+                "elements": [
+                    {
+                        "type": "static_select",
+                        "action_id": "bounty_complete_in_2",
+                        "initial_option": {
+                            "text": {
+                                "type": "plain_text",
+                                "text": "Days",
+                                "emoji": true
+                            },
+                            "value": "bounty_complete_in_days"
+                        },
+                        "options": [
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Days",
+                                    "emoji": true
+                                },
+                                "value": "bounty_complete_in_days"
+                            },
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Weeks",
+                                    "emoji": true
+                                },
+                                "value": "bounty_complete_in_weeks"
+                            },
+                            {
+                                "text": {
+                                    "type": "plain_text",
+                                    "text": "Month",
+                                    "emoji": true
+                                },
+                                "value": "bounty_complete_in_months"
+                            }
+                        ]        
+                    }
+                ]
             }` : ''}
         ]
     }
