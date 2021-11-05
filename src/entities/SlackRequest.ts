@@ -19,6 +19,7 @@ export interface ISlackInteraction {
     response_url: string;
     user: ISlackUser;
     actions: ISlackInteractionAction[];
+    view: any;
 }
 
 export interface ISlackInteractionAction {

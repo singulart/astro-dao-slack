@@ -23,6 +23,7 @@ export const createProposalInitialModal = (
         },
         "blocks": [
             {
+                "block_id": "proposal_create_modal",
                 "type": "actions",
                 "elements": [
                     {
@@ -126,6 +127,7 @@ export const createProposalInitialModal = (
             }
             ${selectedProposalType === 'proposal_type_payout' ? `,
             {
+                "block_id": "payout_recipient",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
@@ -143,6 +145,7 @@ export const createProposalInitialModal = (
                 }
             },
             {
+                "block_id": "payout_amount",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
@@ -160,6 +163,7 @@ export const createProposalInitialModal = (
                 }
             },
             {
+                "block_id": "payout_details",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
@@ -171,9 +175,11 @@ export const createProposalInitialModal = (
                     "type": "plain_text",
                     "text": "Details",
                     "emoji": true
-                }
+                },
+                "optional": true
             },
             {
+                "block_id": "payout_link",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
@@ -188,7 +194,8 @@ export const createProposalInitialModal = (
                     "type": "plain_text",
                     "text": "External Link",
                     "emoji": true
-                }
+                },
+                "optional": true
             }` : ''}
         ]
     }
