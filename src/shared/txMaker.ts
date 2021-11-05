@@ -1,14 +1,14 @@
 import { connect, KeyPair, transactions, utils } from "near-api-js";
-import { getKeyStore } from "./functions";
 import BN from 'bn.js';
-import { TransferProposal } from "../transactions/TransferProposal";
 import { parseNearAmount } from "near-api-js/lib/utils/format";
+import { ProposalStruct } from "../transactions/TransferProposal";
+import { InMemoryKeyStore } from "near-api-js/lib/key_stores";
 
 export const createSerializedTransaction = 
-    async (signerId: string, receiverId: string, contractMethod: string, transactionPayload: TransferProposal): Promise<string> => {
+    async (signerId: string, receiverId: string, contractMethod: string, transactionPayload: ProposalStruct): Promise<string> => {
 
     const config = {
-        keyStore: getKeyStore(),
+        keyStore: new InMemoryKeyStore(),
         networkId: "testnet",
         nodeUrl: "https://rpc.testnet.near.org",
     };

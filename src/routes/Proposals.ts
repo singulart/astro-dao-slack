@@ -5,10 +5,10 @@ import { IDao, IProposal } from '../entities/Proposal';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock'
 import { ISlackRequest } from '../entities/SlackRequest';
 import SlackUserMapping, { ISlackView } from '../entities/SlackUserMapping';
-import { addNewKey, getKeyStore } from '../shared/functions';
 import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
 import { KeyPair, connect, transactions, utils } from "near-api-js";
 import BN from 'bn.js';
+import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
 
 const receiverId = 'china-open.sputnikv2.testnet';
 
@@ -42,7 +42,7 @@ export async function voteForProposal(req: Request, res: Response) {
     //TODO validate the request signature: https://api.slack.com/authentication/verifying-requests-from-slack
 
     const config = {
-        keyStore: getKeyStore(),
+        keyStore: new InMemoryKeyStore(),
         networkId: "testnet",
         nodeUrl: "https://rpc.testnet.near.org",
     };
@@ -119,7 +119,6 @@ export async function createProposal(req: Request, res: Response) {
                 let newMapping = new SlackUserMapping(slackReq.user_id, slackReq.user_name);
                 await persistenceDAL.add(newMapping);
             }
-            const publicKey = await addNewKey(slackReq.user_id);
             return res.status(400).end();
         }
 
