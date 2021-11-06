@@ -2,18 +2,26 @@ import cookieParser from 'cookie-parser';
 import morgan from 'morgan';
 import path from 'path';
 import helmet from 'helmet';
-
 import express, { NextFunction, Request, Response } from 'express';
 import StatusCodes from 'http-status-codes';
 import 'express-async-errors';
+import cron from 'node-cron';
 
 import BaseRouter from './routes';
 import logger from './shared/Logger';
+import { getProposals } from './routes/Proposals';
 
 const app = express();
 const { BAD_REQUEST } = StatusCodes;
 
-
+/************************************************************************************
+ *                              Set up cron task to read and publish proposals
+ ***********************************************************************************/
+// Don't forget to syncronise the cron settings and 'createdAt' filter in the actual API call,
+// otherwise you'll get duplicate proposal notifications
+ cron.schedule('0 */5 * * * *', function() {
+    getProposals(5, 'minute');
+});
 
 /************************************************************************************
  *                              Set basic express settings
