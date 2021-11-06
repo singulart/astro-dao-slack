@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
-import { getProposals, createProposal, voteForProposal } from './Proposals';
+import { createProposal, voteForProposal } from './Proposals';
 import { interactionCallback, optionsCallback } from './Slack';
 import { setup } from './AccountManagement';
 

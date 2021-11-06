@@ -9,32 +9,30 @@ import { createProposalInitialModal } from '../templates/proposal_create_modal_i
 import { KeyPair, connect, transactions, utils } from "near-api-js";
 import BN from 'bn.js';
 import { InMemoryKeyStore } from 'near-api-js/lib/key_stores';
+import dayjs from "dayjs";
 
 const receiverId = 'china-open.sputnikv2.testnet';
 
 
 const persistenceDAL = new SlackUserMappingDao();
 
-export async function getProposals(req: Request, res: Response) {
-    //TODO add cron or similar tool to run this periodically
-    //TODO add filter by createdAt
+export async function getProposals(createdAgo: number, createdAgoUnit: string) {
+    const createdAt = dayjs().subtract(createdAgo, createdAgoUnit); // current time minus some configurable number of time units
+    const formattedDate = createdAt.toISOString();
+    console.log(`Checking for new proposals created since ${formattedDate}`);
     const result = await Axios.get(`${process.env.ASTRO_API}/proposals`, 
         {
             params: {
-                sort: 'createdAt,DESC', 
-                limit: 1,
-                s: {
-                    daoId: receiverId
-                }
+                sort: 'createdAt,ASC', 
+                filter: `createdAt||$gte||${formattedDate}`
             }
         })
-
-    console.log(result.data['data']);
     await Promise.all(result.data.data?.map(async (proposal: IProposal) => {
-      await Axios.post(`https://hooks.slack.com/services/${process.env.SLACK_HOOK}`, proposalSlackPayload(proposal)); 
+      const postResponse = await Axios.post(`https://hooks.slack.com/services/${process.env.SLACK_HOOK}`, proposalSlackPayload(proposal)); 
+      if(postResponse.status === 200) {
+        console.log(`Posted ${result.data.data?.length} proposals updates`);
+      }
     }));
-
-    return res.status(200).end();
 }
 
 
