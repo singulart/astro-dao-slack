@@ -1,11 +1,10 @@
 import { connect, KeyPair, transactions, utils } from "near-api-js";
 import BN from 'bn.js';
 import { parseNearAmount } from "near-api-js/lib/utils/format";
-import { ProposalStruct } from "../transactions/TransferProposal";
 import { InMemoryKeyStore } from "near-api-js/lib/key_stores";
 
 export const createSerializedTransaction = 
-    async (signerId: string, receiverId: string, contractMethod: string, transactionPayload: ProposalStruct): Promise<string> => {
+    async (signerId: string, receiverId: string, contractMethod: string, transactionPayload: any): Promise<string> => {
 
     const config = {
         keyStore: new InMemoryKeyStore(),
@@ -23,7 +22,7 @@ export const createSerializedTransaction =
     const methodName = contractMethod;
     const args = new TextEncoder().encode(JSON.stringify(transactionPayload));
     const gas = new BN(250000000000000);
-    const deposit = new BN(parseNearAmount("0.1") as string); // TODO must come from DAO settings
+    const deposit = isZeroDepositMethod(contractMethod) ? new BN(0) : new BN(parseNearAmount("0.1") as string); // TODO must come from DAO settings
     const actions = [
         new transactions.Action(
             { 
@@ -41,3 +40,5 @@ export const createSerializedTransaction =
     // escape special characters 
     return serializedTransaction.replace(/\+/g, '%2B').replace(/\//g, '%2F');
 }
+
+const isZeroDepositMethod = (method: string): boolean => 'act_proposal' === method;

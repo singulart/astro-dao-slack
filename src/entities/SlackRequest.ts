@@ -27,6 +27,7 @@ export interface ISlackInteractionAction {
     action_id: string;
     value: string;
     selected_option: ISelectedOption;
+    block_id: string;
 }
 
 export interface ISlackUser {

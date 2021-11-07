@@ -1,5 +1,7 @@
 import { IProposal } from "../entities/Proposal"
 
+export const SEPARATOR = '___SEPARATOR___'
+
 const decode = (str: string):string => Buffer.from(str, 'base64').toString('binary');
 
 export const proposalSlackPayload = (proposal: IProposal) => {
@@ -49,8 +51,8 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                             text: ":thumbsup:",
                             "emoji": true
                         },
-                        value: "aye",
-                        action_id: "aye"
+                        value: `${['VoteApprove', proposal.daoId, proposal.proposalId].join(SEPARATOR)}`,
+                        action_id: "VoteApprove"
                     },
                     {
                         type: "button",
@@ -59,8 +61,18 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                             text: ":thumbsdown:",
                             emoji: true
                         },
-                        value: "nay",
-                        action_id: "nay"
+                        value: `${['VoteReject', proposal.daoId, proposal.proposalId].join(SEPARATOR)}`,
+                        action_id: "VoteReject"
+                    },
+                    {
+                        type: "button",
+                        text: {
+                            type: "plain_text",
+                            text: ":wastebasket:",
+                            emoji: true
+                        },
+                        value: `${['VoteRemove', proposal.daoId, proposal.proposalId].join(SEPARATOR)}`,
+                        action_id: "VoteRemove"
                     }
                 ]
             }

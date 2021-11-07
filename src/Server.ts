@@ -19,7 +19,7 @@ const { BAD_REQUEST } = StatusCodes;
  ***********************************************************************************/
 // Don't forget to syncronise the cron settings and 'createdAt' filter in the actual API call,
 // otherwise you'll get duplicate proposal notifications
- cron.schedule('0 */5 * * * *', function() {
+cron.schedule('0 */5 * * * *', function() {
     getProposals(5, 'minute');
 });
 

@@ -12,6 +12,7 @@ import { ProposalStruct } from '../transactions/TransferProposal';
 import { parseNearAmount } from 'near-api-js/lib/utils/format';
 import { createSerializedTransaction } from '../shared/txMaker';
 import { intervalToSeconds } from '../shared/functions';
+import { SEPARATOR } from '../templates/proposal_payload';
 
 const persistenceDAL = new SlackUserMappingDao();
 
@@ -166,7 +167,24 @@ export async function interactionCallback(req: Request, res: Response) {
             currentUser.createProposalView = {id: viewData.id, hash: viewData.hash};
             persistenceDAL.update(currentUser);
             
-        } 
+        } else if(['VoteApprove', 'VoteReject', 'VoteRemove'].includes(actions[0].action_id)) { 
+
+            // ***************************** Voting ************************************
+
+            const currentUser = await persistenceDAL.findBySlackUser(request.user.id);
+            if(!currentUser) {
+                return res.status(404).end('No current user');
+            }
+
+            const params = actions[0].value.split(SEPARATOR);
+            const dao = params[1];
+            const payload = {action: params[0], id: +params[2]}
+
+            // build a serialized transaction 
+            const escapedSerializedTransaction = await createSerializedTransaction(currentUser?.daoWallet as string, dao, 'act_proposal', payload);
+            await Axios.post(request.response_url, 
+                plainText(`<https://wallet.testnet.near.org/sign/?transactions=${escapedSerializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Sign the transaction!>`)); 
+        }
     }
 
     return res.status(201).end();
