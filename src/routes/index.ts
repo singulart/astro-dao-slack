@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
-import { createProposal, voteForProposal } from './Proposals';
+import { createProposal } from './Proposals';
 import { interactionCallback, optionsCallback } from './Slack';
 import { setup } from './AccountManagement';
 
@@ -14,7 +14,6 @@ userRouter.delete('/delete/:id', deleteOneUser);
 // Proposal-route
 const proposalRouter = Router();
 proposalRouter.post('/', createProposal);
-proposalRouter.post('/vote', voteForProposal);
 
 // Slack-route
 const slackRouter = Router();

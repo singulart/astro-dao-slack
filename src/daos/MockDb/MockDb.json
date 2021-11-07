@@ -11,10 +11,20 @@
       "slackUserId": "U02JST58STZ",
       "slackUsername": "isonar.testnets",
       "daoWallet": "isonar1.testnet",
+      "current": false,
+      "createProposalView": {
+        "id": "V02M5F2DJRW",
+        "hash": "1636315239.yFydQKFQ"
+      }
+    },
+    {
+      "slackUserId": "U02JST58STZ",
+      "slackUsername": "isonar.testnets",
+      "daoWallet": "chinagov.testnet",
       "current": true,
       "createProposalView": {
-        "id": "V02LE7H722F",
-        "hash": "1636187674.fUVEeAAn"
+        "id": "",
+        "hash": ""
       }
     }
   ]
