@@ -17,20 +17,23 @@ export interface IProposalKind {
     type: string;
 }
 
-export interface ITransferProposal extends IProposalKind {
+export interface IMemberProposal extends IProposalKind {
     tokenId: string;
-    memberId: string;
+    member_id: string;
     role: string;
 }
 
-export interface IAddMemberProposal extends IProposalKind {
+export interface ITransferProposal extends IProposalKind {
     tokenId: string;
     receiverId: string;
     amount: string;
-    msg: string;
 }
 
 export interface IAddBountyProposal extends IProposalKind {
+    bounty: AddBountyProposal;
+}
+
+export interface AddBountyProposal {
     description: string;
     token: string;
     amount: string;
@@ -51,48 +54,3 @@ export interface IDao {
     id: string;
     config: IDaoConfig;
 }
-
-
-
-// AddBounty proposal
-
-// {
-//     "proposal": {
-//       "description": "444$$$$",
-//       "kind": {
-//         "AddBounty": {
-//           "bounty": {
-//             "description": "444$$$$",
-//             "token": "",
-//             "amount": "444000000000000000000000000",
-//             "times": 3,
-//             "max_deadline": "259200000000000"
-//           }
-//         }
-//       }
-//     }
-// }
-
-// {
-//     "proposal": {
-//       "description": "q$$$$",
-//       "kind": {
-//         "AddMemberToRole": {
-//           "member_id": "hack.testnet",
-//           "role": "China Government"
-//         }
-//       }
-//     }
-// }
-
-// {
-//     "proposal": {
-//       "description": "ereeeer$$$$",
-//       "kind": {
-//         "RemoveMemberFromRole": {
-//           "member_id": "hack.testnet",
-//           "role": "Council"
-//         }
-//       }
-//     }
-// }
