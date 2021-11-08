@@ -323,31 +323,31 @@ export const createProposalInitialModal = (
                     }
                 ]
             }` : ''}
-            ${selectedProposalType === 'proposal_type_add_member' ? `,
+            ${['proposal_type_add_member', 'proposal_type_remove_member'].includes(selectedProposalType) ? `,
             {
-                "block_id": "add_member_account",
+                "block_id": "member_proposal_account",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
-                    "action_id": "add_member_account",
+                    "action_id": "member_account",
                     "placeholder": {
                         "type": "plain_text",
-                        "text": "NEAR account name",
+                        "text": "NEAR account name, e.g. ilia_polos.near",
                         "emoji": true
                     }
                 },
                 "label": {
                     "type": "plain_text",
-                    "text": "Account to add to group",
+                    "text": "Member account",
                     "emoji": true
                 }
             },
             {
-                "block_id": "add_member_group",
+                "block_id": "member_proposal_group",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
-                    "action_id": "add_member_group",
+                    "action_id": "member_group",
                     "initial_value": "Everyone"
                 },
                 "label": {
@@ -355,39 +355,22 @@ export const createProposalInitialModal = (
                     "text": "Group",
                     "emoji": true
                 }
-            }` : ''}
-            ${selectedProposalType === 'proposal_type_remove_member' ? `,
-            {
-                "block_id": "remove_member_account",
-                "type": "input",
-                "element": {
-                    "type": "plain_text_input",
-                    "action_id": "remove_member_account",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "NEAR account name",
-                        "emoji": true
-                    }
-                },
-                "label": {
-                    "type": "plain_text",
-                    "text": "Account to remove from group",
-                    "emoji": true
-                }
             },
             {
-                "block_id": "remove_member_group",
+                "block_id": "member_proposal_description",
                 "type": "input",
                 "element": {
                     "type": "plain_text_input",
-                    "action_id": "remove_member_group",
-                    "initial_value": "Everyone"
+                    "multiline": true,
+                    "action_id": "member_description",
+                    "max_length": 500
                 },
                 "label": {
                     "type": "plain_text",
-                    "text": "Group",
+                    "text": "Description",
                     "emoji": true
-                }
+                },
+                "optional": true
             }` : ''}
         ]
     }

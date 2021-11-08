@@ -48,7 +48,7 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: ":bank: *Bounty amount:* ${formatNearAmount((proposal.kind as IAddBountyProposal).bounty.amount)}  *Summary:* ${(proposal.kind as IAddBountyProposal).bounty.description}*"
+                    text: ":bank: *Bounty amount:* ${formatNearAmount((proposal.kind as IAddBountyProposal).bounty.amount)} *Summary:* ${(proposal.kind as IAddBountyProposal).bounty.description}*"
                 }
             },` : ''}
             ${proposal.kind.type === 'AddMemberToRole' ? 
@@ -56,9 +56,7 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: ":bank: Add  
-                                  ${(proposal.kind as IMemberProposal).member_id} :point_right: *
-                                  ${(proposal.kind as IMemberProposal).role}*"
+                    text: ":bank: Add \`${(proposal.kind as IMemberProposal).memberId}\` :point_right: *${(proposal.kind as IMemberProposal).role}*"
                 }
             },` : ''}
             ${proposal.kind.type === 'RemoveMemberFromRole' ? 
@@ -66,9 +64,7 @@ export const proposalSlackPayload = (proposal: IProposal) => {
                 type: "section",
                 text: {
                     type: "mrkdwn",
-                    text: ":bank: Remove  
-                                  ${(proposal.kind as IMemberProposal).member_id} :point_right: *
-                                  ${(proposal.kind as IMemberProposal).role}*"
+                    text: ":bank: Remove \`${(proposal.kind as IMemberProposal).memberId}\` :point_right: *${(proposal.kind as IMemberProposal).role}*"
                 }
             },` : ''}
             {
