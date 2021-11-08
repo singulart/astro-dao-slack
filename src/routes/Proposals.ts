@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import Axios from 'axios';
 import { proposalSlackPayload } from '../templates/proposal_payload';
 import { IDao, IProposal } from '../entities/Proposal';
 import SlackUserMappingDao from '../daos/SlackUserMapping/SlackUserMappingDao.mock'
@@ -7,6 +6,8 @@ import { ISlackRequest } from '../entities/SlackRequest';
 import SlackUserMapping, { ISlackView } from '../entities/SlackUserMapping';
 import { createProposalInitialModal } from '../templates/proposal_create_modal_initial';
 import dayjs from "dayjs";
+import Axios from 'axios';
+
 
 const persistenceDAL = new SlackUserMappingDao();
 
@@ -71,7 +72,5 @@ export async function createProposal(req: Request, res: Response) {
             }
             return res.status(400).end();
         }
-
     }
-
 }

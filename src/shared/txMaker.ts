@@ -1,7 +1,7 @@
 import { connect, KeyPair, transactions, utils } from "near-api-js";
-import BN from 'bn.js';
 import { parseNearAmount } from "near-api-js/lib/utils/format";
 import { InMemoryKeyStore } from "near-api-js/lib/key_stores";
+import BN from 'bn.js';
 
 export const createSerializedTransaction = 
     async (signerId: string, receiverId: string, contractMethod: string, transactionPayload: any): Promise<string> => {
@@ -41,4 +41,5 @@ export const createSerializedTransaction =
     return serializedTransaction.replace(/\+/g, '%2B').replace(/\//g, '%2F');
 }
 
+// act_proposal (vote) calls must have zero deposit 
 const isZeroDepositMethod = (method: string): boolean => 'act_proposal' === method;
