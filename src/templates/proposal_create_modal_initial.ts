@@ -46,23 +46,23 @@ export const createProposalInitialModal = (
                             },
                             "value": "proposal_type_bounty"
                         },` : ''}
-                        ${selectedProposalType === 'proposal_add_member' ?
+                        ${selectedProposalType === 'proposal_type_add_member' ?
                         `"initial_option": {
                             "text": {
                                 "type": "plain_text",
                                 "text": "Add member",
                                 "emoji": true
                             },
-                            "value": "proposal_add_member"
+                            "value": "proposal_type_add_member"
                         },` : ''}
-                        ${selectedProposalType === 'proposal_remove_member' ?
+                        ${selectedProposalType === 'proposal_type_remove_member' ?
                         `"initial_option": {
                             "text": {
                                 "type": "plain_text",
                                 "text": "Remove member",
                                 "emoji": true
                             },
-                            "value": "proposal_remove_member"
+                            "value": "proposal_type_remove_member"
                         },` : ''}            
                         "placeholder": {
                             "type": "plain_text",
@@ -92,7 +92,7 @@ export const createProposalInitialModal = (
                                     "text": "Add member",
                                     "emoji": true
                                 },
-                                "value": "proposal_add_member"
+                                "value": "proposal_type_add_member"
                             },
                             {
                                 "text": {
@@ -100,7 +100,7 @@ export const createProposalInitialModal = (
                                     "text": "Remove member",
                                     "emoji": true
                                 },
-                                "value": "proposal_remove_member"
+                                "value": "proposal_type_remove_member"
                             }
                         ],
                         "action_id": "proposal_type_select_action"
@@ -257,11 +257,7 @@ export const createProposalInitialModal = (
                 "element": {
                     "type": "plain_text_input",
                     "action_id": "bounty_num_claims",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "3",
-                        "emoji": true
-                    }
+                    "initial_value": "3"
                 },
                 "label": {
                     "type": "plain_text",
@@ -275,11 +271,7 @@ export const createProposalInitialModal = (
                 "element": {
                     "type": "plain_text_input",
                     "action_id": "bounty_complete_in_1",
-                    "placeholder": {
-                        "type": "plain_text",
-                        "text": "3",
-                        "emoji": true
-                    }
+                    "initial_value": "3"
                 },
                 "label": {
                     "type": "plain_text",
@@ -330,6 +322,72 @@ export const createProposalInitialModal = (
                         ]        
                     }
                 ]
+            }` : ''}
+            ${selectedProposalType === 'proposal_type_add_member' ? `,
+            {
+                "block_id": "add_member_account",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "add_member_account",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "NEAR account name",
+                        "emoji": true
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Account to add to group",
+                    "emoji": true
+                }
+            },
+            {
+                "block_id": "add_member_group",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "add_member_group",
+                    "initial_value": "Everyone"
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Group",
+                    "emoji": true
+                }
+            }` : ''}
+            ${selectedProposalType === 'proposal_type_remove_member' ? `,
+            {
+                "block_id": "remove_member_account",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "remove_member_account",
+                    "placeholder": {
+                        "type": "plain_text",
+                        "text": "NEAR account name",
+                        "emoji": true
+                    }
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Account to remove from group",
+                    "emoji": true
+                }
+            },
+            {
+                "block_id": "remove_member_group",
+                "type": "input",
+                "element": {
+                    "type": "plain_text_input",
+                    "action_id": "remove_member_group",
+                    "initial_value": "Everyone"
+                },
+                "label": {
+                    "type": "plain_text",
+                    "text": "Group",
+                    "emoji": true
+                }
             }` : ''}
         ]
     }
