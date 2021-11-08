@@ -4,7 +4,7 @@ export interface ProposalStruct {
 
 export interface Proposal {
     description: string;
-    kind: TransferProposalKind | BountyProposalKind;
+    kind: TransferProposalKind | BountyProposalKind | AddMemberProposalKind | RemoveMemberProposalKind;
 }
 
 export interface TransferProposalKind {
@@ -34,20 +34,15 @@ export interface BountyPayload {
     max_deadline: string;
 }
 
-// {
-    //     "proposal": {
-    //       "description": "444$$$$",
-    //       "kind": {
-    //         "AddBounty": {
-    //           "bounty": {
-    //             "description": "444$$$$",
-    //             "token": "",
-    //             "amount": "444000000000000000000000000",
-    //             "times": 3,
-    //             "max_deadline": "259200000000000"
-    //           }
-    //         }
-    //       }
-    //     }
-    // }
-    
+export interface AddMemberProposalKind {
+    AddMemberToRole: IMemberRole;
+}
+
+export interface RemoveMemberProposalKind {
+    RemoveMemberFromRole: IMemberRole;
+}
+
+export interface IMemberRole {
+    member_id: string;
+    role: string;
+}

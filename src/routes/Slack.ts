@@ -42,7 +42,7 @@ export async function interactionCallback(req: Request, res: Response) {
     
             const payoutTransaction: ProposalStruct = {
                 proposal: {
-                    description: details,
+                    description: details ? details : '',
                     kind: {
                         Transfer: {
                             token_id: '',
@@ -85,11 +85,11 @@ export async function interactionCallback(req: Request, res: Response) {
     
             const payoutTransaction: ProposalStruct = {
                 proposal: {
-                    description: details,
+                    description: details ? details : '',
                     kind: {
                         AddBounty: {
                             bounty: {
-                                description: details,
+                                description: details ? details : '',
                                 token: '',
                                 amount: parseNearAmount(amount) as string,
                                 times: +claimsNumber,
@@ -103,6 +103,58 @@ export async function interactionCallback(req: Request, res: Response) {
 
             // build a serialized transaction 
             const escapedSerializedTransaction = await createSerializedTransaction(currentUser?.daoWallet as string, dao, 'add_proposal', payoutTransaction);
+
+            const sentMessage = await Axios.post('https://slack.com/api/chat.postEphemeral', 
+            {
+                channel: request.user.id,
+                user: request.user.id,
+                text: `<https://wallet.testnet.near.org/sign/?transactions=${escapedSerializedTransaction}&success_url=${req.headers['x-forwarded-proto']}%3A%2F%2F${req.headers.host}/api/oauth/near_wallet|Sign the transaction!>`
+            },
+             
+            { headers: {
+                'Content-Type': 'application/json', 
+                'Authorization': `Bearer ${process.env.BOT_TOKEN}`
+              }
+            }); 
+            console.log(`Direct message to sign transaction sent: ${sentMessage.data.ok}`);  
+
+        } else if(['proposal_type_add_member', 'proposal_type_remove_member'].includes(proposalType)) {
+            const account = request.view.state.values.member_proposal_account.member_account.value;
+            const group = request.view.state.values.member_proposal_group.member_group.value;
+            const description = request.view.state.values.member_proposal_description.member_description.value;
+
+    
+            if(!dao || !account || !group) {
+                res.status(400).send('Invalid form data').end();
+            }
+    
+            const memberTransaction: ProposalStruct = proposalType === 'proposal_type_add_member' ?
+            {
+                proposal: {
+                    description: description ? description : '',
+                    kind: {
+                        AddMemberToRole: {
+                            member_id: account,
+                            role: group
+                        }
+                    }    
+                }
+            } : 
+            {
+                proposal: {
+                    description: description ? description : '',
+                    kind: {
+                        RemoveMemberFromRole: {
+                            member_id: account,
+                            role: group
+                        }
+                    }    
+                }
+            }
+            console.log(JSON.stringify(memberTransaction)); 
+
+            // build a serialized transaction 
+            const escapedSerializedTransaction = await createSerializedTransaction(currentUser?.daoWallet as string, dao, 'add_proposal', memberTransaction);
 
             const sentMessage = await Axios.post('https://slack.com/api/chat.postEphemeral', 
             {

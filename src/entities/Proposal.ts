@@ -19,7 +19,7 @@ export interface IProposalKind {
 
 export interface IMemberProposal extends IProposalKind {
     tokenId: string;
-    member_id: string;
+    memberId: string;
     role: string;
 }
 
