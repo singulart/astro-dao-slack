@@ -53,4 +53,5 @@ export interface IDao {
     transactionHash: string;
     id: string;
     config: IDaoConfig;
+    amount: string;
 }

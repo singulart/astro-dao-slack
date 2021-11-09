@@ -1,8 +1,9 @@
 import { Router } from 'express';
 import { getAllUsers, addOneUser, updateOneUser, deleteOneUser } from './Users';
 import { createProposal } from './Proposals';
-import { interactionCallback, optionsCallback } from './Slack';
+import { interactionCallback } from './Slack';
 import { setup } from './AccountManagement';
+import { getBalance } from './Balance';
 
 // User-route
 const userRouter = Router();
@@ -15,10 +16,13 @@ userRouter.delete('/delete/:id', deleteOneUser);
 const proposalRouter = Router();
 proposalRouter.post('/', createProposal);
 
+// Balance route
+const balanceRouter = Router();
+balanceRouter.post('/', getBalance);
+
 // Slack-route
 const slackRouter = Router();
 slackRouter.post('/interaction', interactionCallback);
-slackRouter.post('/options', optionsCallback);
 
 // preferences-route
 const preferencesRouter = Router();
@@ -31,5 +35,6 @@ baseRouter.use('/users', userRouter);
 baseRouter.use('/proposal', proposalRouter);
 baseRouter.use('/slack', slackRouter);
 baseRouter.use('/preferences', preferencesRouter);
+baseRouter.use('/balance', balanceRouter);
 
 export default baseRouter;
