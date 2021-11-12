@@ -17,3 +17,19 @@ This is a submission for the DAO Global Hackathon [Bounty](https://gitcoin.co/is
 
 Users' private keys are never stored within the app. Each and every transaction must be signed via the [Wallet](wallet.near.org/).
 
+## Sequence diagram
+
+![Astro Slack App](./img/astro.png "Astro Slack App")
+
+## Configuration
+
+`.evn` file should be created in the root folder, with the following variables:
+
+```
+ASTRO_API=https://api.testnet.app.astrodao.com/api/v1
+ASTRO_APP=https://api.testnet.app.astrodao.com
+SLACK_HOOK=<HOOK>
+APP_CLIENT_ID=<Client ID>
+APP_SHARED_SECRET=<Shared Secret>
+BOT_TOKEN=<Bot Token>
+```
