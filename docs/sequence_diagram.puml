@@ -1,0 +1,67 @@
+@startuml
+actor "Slack User" as User
+participant "Slack Client Application" as Slack
+participant "Astro Slack App" as App
+participant "Astro Rest API" as Api
+participant "NEAR Wallet UI" as Wallet
+participant "Astro Smart Contract" as Contract
+
+alt Add / Remove Wallet
+  autonumber
+  activate User
+        User -> Slack: /setup
+        activate Slack
+        Slack -> User: list of options (add, remove, view)
+        User -> Slack: add/remove account
+        Slack -> App: add/remove account
+        activate App
+          App -> App: update account mapping
+          App -> Slack: OK
+        deactivate App
+        deactivate Slack
+  deactivate User
+end alt
+
+alt Create Proposal
+  activate User
+    User -> Slack: /proposal
+    activate Slack
+    Slack -> App: POST /proposal
+    activate App
+    App -> App: check user connected account
+    App -> Api: Get list of user DAOs
+    activate Api
+    Api -> App: List of user DAOs
+    deactivate Api
+    App -> Slack: Dynamic proposal form json
+    Slack -> User: create proposal UI
+    User -> Slack: Submit data
+    Slack -> App: Submit data
+    App -> App: Create Transaction
+    App -> App: Serialize Transaction
+    App -> Slack: Sign URL
+    Slack -> User: Sign URL
+    deactivate App
+    deactivate Slack
+    User -> Wallet: Sign Transaction
+    activate Wallet
+    Wallet -> Contract: add_proposal
+    Contract -> Wallet: OK
+    deactivate Wallet
+  deactivate User
+end alt
+
+alt Proposal Notifications
+  activate App
+  App -> App: cron job
+  activate Api
+  App -> Api: Get list of Proposals
+  Api -> App: List of Proposals
+  deactivate Api
+  App -> Slack: List of Proposals
+  deactivate App
+  Slack -> User: List of Proposals
+end alt
+
+@enduml
+
