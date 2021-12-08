@@ -1,6 +1,8 @@
 import './loadEnv';
 import find from 'find';
 import Jasmine from 'jasmine';
+import JasmineOp from 'jasmine';
+
 import commandLineArgs from 'command-line-args';
 import logger from '@shared/Logger';
 
@@ -17,7 +19,7 @@ const options = commandLineArgs([
 
 
 // Init Jasmine
-const jasmine = new Jasmine(null);
+const jasmine = new Jasmine({});
 
 // Set location of test files
 jasmine.loadConfig({
