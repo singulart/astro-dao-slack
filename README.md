@@ -5,6 +5,12 @@ This is a submission for the DAO Global Hackathon [Bounty](https://gitcoin.co/is
 
 [NEAR Blog](https://near.org/blog/astro-launches-on-near-to-supercharge-dao-communities/) on Astro initiative. 
 
+## Installation
+
+1. Clone the repo
+2. `yarn`
+3. `npm run start:dev`
+
 ## App Features
 
 * Connect a wallet

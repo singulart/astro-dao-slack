@@ -61,6 +61,7 @@
   ],
   "dependencies": {
     "@types/node-cron": "^3.0.0",
+    "axios": "^0.24.0",
     "bn": "^1.0.5",
     "command-line-args": "^5.2.0",
     "cookie-parser": "^1.4.5",
